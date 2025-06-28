@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Our Perfect Day</title>
+  <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap" rel="stylesheet">
+  <style>
+    body, html {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      font-family: 'Great Vibes', cursive;
+      color: #fff;
+      overflow-x: hidden;
+      background-color: rgba(0, 0, 0, 0.8);
+    }
+    video.bg-video {
+      position: fixed;
+      right: 0;
+      bottom: 0;
+      min-width: 100%;
+      min-height: 100%;
+      z-index: -1;
+      object-fit: cover;
+    }
+    .fullscreen {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.85);
+      z-index: 10000;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 20px;
+    }
+    #countdown-screen h1 {
+      font-size: 3.5rem;
+      margin-bottom: 30px;
+    }
+    input[type="password"], input[type="text"] {
+      padding: 12px;
+      font-size: 1.4rem;
+      border-radius: 10px;
+      border: none;
+      margin: 8px;
+      width: 80%;
+      max-width: 300px;
+    }
+    #enter-btn {
+      padding: 12px 25px;
+      margin-top: 10px;
+      font-size: 1.4rem;
+      background-color: #ff80ab;
+      border: none;
+      border-radius: 20px;
+      color: white;
+      cursor: pointer;
+    }
+    #music-btn {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: rgba(255,255,255,0.1);
+      border: none;
+      color: white;
+      font-size: 24px;
+      padding: 10px;
+      border-radius: 50%;
+      z-index: 9999;
+      cursor: pointer;
+    }
+    .hidden { display: none; }
+    .container {
+      padding: 30px;
+      max-width: 800px;
+      margin: 60px auto;
+      background: rgba(0, 0, 0, 0.5);
+      border-radius: 20px;
+      box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+      text-align: center;
+    }
+    .container h1 {
+      font-size: 3rem;
+      margin-bottom: 10px;
+    }
+    .message p {
+      font-size: 1.4rem;
+      margin-bottom: 20px;
+    }
+    .checklist label {
+      display: none;
+      font-size: 1.4rem;
+      margin: 20px 0 10px;
+    }
+    .checklist label.active {
+      display: block;
+    }
+    .upload-section {
+      display: none;
+      margin: 10px 0;
+    }
+    .flower-animation, .kiss-animation {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw; height: 100vh;
+      background: rgba(0,0,0,0.6);
+      font-size: 4rem;
+      color: pink;
+      justify-content: center;
+      align-items: center;
+      z-index: 10000;
+    }
+    .map-links {
+      margin-top: 30px;
+      font-size: 1.2rem;
+    }
+    .map-links a {
+      display: block;
+      margin: 8px 0;
+      color: #f8bbd0;
+      text-decoration: none;
+    }
+    #end-button {
+      display: none;
+      margin-top: 40px;
+      padding: 15px 30px;
+      font-size: 1.4rem;
+      background-color: #ff4d6d;
+      color: white;
+      border: none;
+      border-radius: 20px;
+      cursor: pointer;
+    }
+    #summary {
+      display: none;
+      margin-top: 30px;
+    }
+    #summary img {
+      width: 200px;
+      margin: 10px;
+      border-radius: 10px;
+      animation: pop 1s ease;
+    }
+    @keyframes pop {
+      from { transform: scale(0.7); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+  </style>
+</head>
+<body>
+  <video autoplay muted loop class="bg-video">
+    <source src="background.mp4" type="video/mp4">
+  </video>
+
+  <div class="fullscreen" id="countdown-screen">
+    <h1 id="countdown">Loading...</h1>
+    <input type="password" id="password-input" placeholder="Enter the admin password">
+    <p>or</p>
+    <input type="text" id="date-input" placeholder="Enter this date to start the date (note: this is the date that we first got in a relationship)">
+    <button id="enter-btn">Enter</button>
+  </div>
+
+  <audio id="waiting-music" muted loop>
+    <source src="waiting song.mp3" type="audio/mpeg">
+  </audio>
+
+  <audio id="bg-music" loop>
+    <source src="romantic.mp3" type="audio/mpeg">
+  </audio>
+
+  <button id="music-btn" onclick="toggleMusic()">🔊</button>
+
+  <div class="container hidden" id="main-content">
+    <h1>Our Perfect Day</h1>
+    <div class="message">
+      <p>Everything we’ll do today is unforgettable and beautiful, just like you.</p>
+      <img src="her-photo.jpg" width="160" style="border-radius: 15px; box-shadow: 0 0 15px rgba(255,255,255,0.3); margin-top: 10px;">
+    </div>
+
+    <div class="checklist" id="checklist">
+      <label class="active"><input type="checkbox" onchange="handleCheck(0)"> 💐 Give her the flowers</label>
+      <div class="upload-section" id="upload-0"><input type="file" onchange="showNext(0)"></div>
+
+      <label><input type="checkbox" onchange="handleCheck(1)"> 🌳 Go to Southpark</label>
+      <div class="upload-section" id="upload-1"><input type="file" onchange="showNext(1)"></div>
+
+      <label><input type="checkbox" onchange="handleCheck(2)"> 🎳 Bowling or 🕹️ Arcade</label>
+      <div class="upload-section" id="upload-2"><input type="file" onchange="showNext(2)"></div>
+
+      <label><input type="checkbox" onchange="handleCheck(3)"> 🎬 Cinema</label>
+      <div class="upload-section" id="upload-3"><input type="file" onchange="showNext(3)"></div>
+
+      <label><input type="checkbox" onchange="handleCheck(4)"> 🍽️ Dinner</label>
+      <div class="upload-section" id="upload-4"><input type="file" onchange="showNext(4)"></div>
+    </div>
+
+    <div class="map-links">
+      <h2>Places We'll Visit</h2>
+      <a href="https://maps.google.com/?q=South+Park,+New+Cairo" target="_blank">South Park</a>
+      <a href="https://maps.google.com/?q=Starbucks+New+Cairo" target="_blank">Starbucks</a>
+      <a href="https://maps.google.com/?q=Point+90+Cinema" target="_blank">Renaissance Cinema - Point 90</a>
+      <a href="https://maps.google.com/?q=Kazouza+Restaurant" target="_blank">Kazouza</a>
+    </div>
+
+    <button id="end-button" onclick="showSummary()">End of the Date 💖</button>
+
+    <div id="summary">
+      <h2>Our Date Memories</h2>
+      <img src="flowers.jpg" alt="flowers">
+      <img src="southpark.jpg" alt="southpark">
+      <img src="bowling.jpg" alt="bowling">
+      <img src="cinema.jpg" alt="cinema">
+      <img src="dinner.jpg" alt="dinner">
+    </div>
+   <div id="valentine-card" class="hidden">
+  <div class="card">
+    <p>
+      To my beautiful love,<br><br>
+      Today was magical, but every day with you is even better.<br>
+      You are my sunshine, my calm, and my forever. 💋<br><br>
+      Yours always,<br>Amr 💘
+    </p>
+  </div>
+</div>
+
+  </div>
+
+  <div class="flower-animation" id="flowers">🌸</div>
+  <div class="kiss-animation" id="kiss">💋</div>
+
+  <script>
+    const PASSWORD = "Abgaber12";
+    const DATE = "23/3/2025";
+    const unlockTime = new Date("2025-07-03T13:00:00+02:00").getTime();
+    const bgMusic = document.getElementById("bg-music");
+    const waitingMusic = document.getElementById("waiting-music");
+
+    window.addEventListener("load", () => {
+      waitingMusic.muted = false;
+      waitingMusic.volume = 0.7;
+      waitingMusic.play().catch(() => {
+        document.addEventListener("click", () => waitingMusic.play(), { once: true });
+      });
+    });
+
+    function toggleMusic() {
+      const isMuted = bgMusic.muted && waitingMusic.muted;
+      bgMusic.muted = !isMuted;
+      waitingMusic.muted = !isMuted;
+      document.getElementById("music-btn").textContent = isMuted ? "🔊" : "🔇";
+    }
+
+    function startExperience() {
+      document.getElementById("countdown-screen").style.display = "none";
+      document.getElementById("main-content").classList.remove("hidden");
+      waitingMusic.pause();
+      bgMusic.play().catch(() => {});
+    }
+
+    document.getElementById("enter-btn").onclick = () => {
+      const pass = document.getElementById("password-input").value;
+      const date = document.getElementById("date-input").value;
+      const now = new Date().getTime();
+      if (pass === PASSWORD || (date === DATE && now >= unlockTime)) {
+        startExperience();
+      } else {
+        alert("Access denied or too early. Check again.");
+      }
+    }
+
+    const countdown = document.getElementById("countdown");
+    const eventDate = unlockTime;
+    setInterval(() => {
+      const now = new Date().getTime();
+      const dist = eventDate - now;
+      const d = Math.floor(dist / (1000 * 60 * 60 * 24));
+      const h = Math.floor((dist % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const m = Math.floor((dist % (1000 * 60 * 60)) / (1000 * 60));
+      const s = Math.floor((dist % (1000 * 60)) / 1000);
+      countdown.innerHTML = `Time left: ${d}d ${h}h ${m}m ${s}s`;
+    }, 1000);
+
+    function handleCheck(index) {
+      document.getElementById(`upload-${index}`).style.display = "block";
+    }
+
+    function showNext(index) {
+      document.getElementById("flowers").style.display = "flex";
+      setTimeout(() => {
+        document.getElementById("flowers").style.display = "none";
+        document.getElementById("kiss").style.display = "flex";
+        setTimeout(() => {
+          document.getElementById("kiss").style.display = "none";
+          const labels = document.querySelectorAll(".checklist label");
+          if (labels[index + 1]) labels[index + 1].classList.add("active");
+          if (index === 4) document.getElementById("end-button").style.display = "inline-block";
+        }, 5000);
+      }, 2000);
+    }
+
+    function showSummary() {
+      document.getElementById("summary").style.display = "block";
+      window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+    }
+  </script>
+</body>
+</html>
